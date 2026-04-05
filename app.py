@@ -7,7 +7,7 @@ import json
 
 app = FastAPI()
 
-SEARX_URL = os.getenv("SEARX_URL", "https://searx.work")
+SEARX_URL = os.getenv("SEARX_URL", "https://searx.be")
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
