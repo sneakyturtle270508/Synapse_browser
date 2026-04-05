@@ -7,7 +7,7 @@ import json
 
 app = FastAPI()
 
-SEARX_URL = os.getenv("SEARX_URL", "https://synapse-searx.onrender.com")
+SEARX_URL = os.getenv("SEARX_URL", "https://synapse-searx.onrender.com/")
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
@@ -19,7 +19,7 @@ async def api_proxy(q: str):
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.get(
-                f"{SEARX_URL}/search",
+                f"{SEARX_URL}search",
                 params={
                     "q": q,
                     "format": "json",
@@ -56,14 +56,12 @@ async def api_proxy(q: str):
 async def fetch_github_profile(query: str):
     words = query.strip().split()
     
-    # Check if it looks like a name or username
     is_name = len(words) >= 2 and all(w[0].isupper() for w in words if w.isalpha())
     is_username = len(words) == 1 and words[0].isalnum()
     
     if not (is_name or is_username):
         return None
     
-    # Generate possible usernames
     usernames = []
     if len(words) >= 2:
         first, last = words[0].lower(), words[-1].lower()
