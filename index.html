@@ -84,6 +84,10 @@
       margin-bottom: 3rem;
       animation: fadeSlideDown 0.4s 0.05s ease both; opacity: 0;
     }
+    .header-logo {
+      color: var(--text);
+      height: auto;
+    }
     .logo {
       font-family: var(--mono); font-size: 13px; font-weight: 500;
       letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2);
@@ -510,6 +514,98 @@
       background: var(--border);
     }
 
+    .speedtest-card {
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .speedtest-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+    }
+    .speedtest-icon {
+      font-size: 32px;
+    }
+    .speedtest-info {
+      flex: 1;
+    }
+    .speedtest-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .speedtest-subtitle {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+    }
+    .speedtest-card-body {
+      padding: 20px;
+    }
+    .speedtest-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .speedtest-stat {
+      text-align: center;
+    }
+    .speedtest-stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .speedtest-stat-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+    .speedtest-btn {
+      width: 100%;
+      background: var(--bg-tertiary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .speedtest-btn:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .speedtest-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .speedtest-gauge {
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .speedtest-gauge-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1DB954, #1ed760);
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 3px;
+    }
+
     @media (max-width: 900px) {
       .layout.has-info {
         grid-template-columns: 1fr;
@@ -530,7 +626,40 @@
   <div class="shell">
 
     <div class="header">
-      <div class="logo"><span class="status-dot"></span><strong>Williams</strong> Browser</div>
+      <svg viewBox="0 0 520 160" xmlns="http://www.w3.org/2000/svg" width="180" height="55" class="header-logo">
+  <!-- Icon group -->
+  <g transform="translate(78, 80)">
+    <!-- Lines from center -->
+    <line x1="0" y1="0" x2="-38" y2="-32" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="38" y2="-32" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="-42" y2="28" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="42" y2="28" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Satellite nodes -->
+    <!-- Top-left: teal -->
+    <circle cx="-42" cy="-36" r="10" fill="#2CC4B2"/>
+    <!-- Top-right: red/coral -->
+    <circle cx="42" cy="-36" r="10" fill="#E05A5A"/>
+    <!-- Bottom-left: orange/yellow -->
+    <circle cx="-46" cy="32" r="10" fill="#E8A020"/>
+    <!-- Bottom-right: green -->
+    <circle cx="46" cy="32" r="10" fill="#7DC642"/>
+
+    <!-- Center node: purple -->
+    <circle cx="0" cy="0" r="22" fill="#6C63D5"/>
+  </g>
+
+  <!-- "Synapse" text -->
+  <text
+    x="160"
+    y="100"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="68"
+    font-weight="700"
+    fill="currentColor"
+    letter-spacing="-1"
+  >Synapse</text>
+</svg>
       <div class="header-meta" id="indexMeta">powered by Searx</div>
     </div>
 
@@ -559,6 +688,38 @@
       </div>
 
       <div class="info-col">
+        <div class="speedtest-card" id="speedtestCard" style="display:none;">
+          <div class="speedtest-card-header">
+            <div class="speedtest-icon">📶</div>
+            <div class="speedtest-info">
+              <div class="speedtest-title">Speed Test</div>
+              <div class="speedtest-subtitle" id="speedtestStatus">Ready to test</div>
+            </div>
+          </div>
+          <div class="speedtest-card-body">
+            <div class="speedtest-stats">
+              <div class="speedtest-stat">
+                <div class="speedtest-stat-value" id="speedPing">--</div>
+                <div class="speedtest-stat-label">Ping (ms)</div>
+              </div>
+              <div class="speedtest-stat">
+                <div class="speedtest-stat-value" id="speedDownload">--</div>
+                <div class="speedtest-stat-label">Download</div>
+              </div>
+              <div class="speedtest-stat">
+                <div class="speedtest-stat-value" id="speedUpload">--</div>
+                <div class="speedtest-stat-label">Upload</div>
+              </div>
+            </div>
+            <button class="speedtest-btn" id="speedtestRunBtn" onclick="runSpeedTest()">
+              <span>▶</span> Start Test
+            </button>
+            <div class="speedtest-gauge">
+              <div class="speedtest-gauge-fill" id="speedtestGauge"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="github-card" id="githubCard">
           <div class="github-card-header">
             <img class="github-avatar" id="githubAvatar" src="" alt="avatar">
@@ -570,11 +731,7 @@
           <div class="github-bio" id="githubBio"></div>
           <div class="github-stats" id="githubStats"></div>
           <div class="github-links" id="githubLinks"></div>
-          <div class="github-repos" id="githubRepos">
-            <div class="github-repo"><div class="github-repo-icon">📁</div><div class="github-repo-name">repo</div></div>
-            <div class="github-repo"><div class="github-repo-icon">📁</div><div class="github-repo-name">repo</div></div>
-            <div class="github-repo"><div class="github-repo-icon">📁</div><div class="github-repo-name">repo</div></div>
-          </div>
+          
         </div>
 
         <div class="info-card" id="infoCard">
@@ -674,6 +831,20 @@
 
     function renderResults(data, query) {
       skeletonEl.style.display = 'none';
+      
+      // Hide all info cards first
+      document.getElementById('speedtestCard').style.display = 'none';
+      layout.classList.remove('has-info');
+      githubCard.classList.remove('visible');
+      infoCard.classList.remove('visible');
+      
+      // Check for speed test
+      if (query.toLowerCase().includes('speed test') || query.toLowerCase() === 'speedtest') {
+        document.getElementById('speedtestCard').style.display = 'block';
+        layout.classList.add('has-info');
+        renderSimpleResults(data.results, query);
+        return;
+      }
       
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
       resultCountEl.textContent = `${data.total || 0} results · ${elapsed}s`;
@@ -874,6 +1045,73 @@
     function getInitials(text) {
       if (!text) return '??';
       return text.split(' ').map(w => w[0]).filter(Boolean).join('').substring(0, 2).toUpperCase();
+    }
+
+    async function runSpeedTest() {
+      const btn = document.getElementById('speedtestRunBtn');
+      const status = document.getElementById('speedtestStatus');
+      const gauge = document.getElementById('speedtestGauge');
+      
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Testing...';
+      status.textContent = 'Testing download speed...';
+      gauge.style.width = '0%';
+      
+      try {
+        const ping = await testPing();
+        document.getElementById('speedPing').textContent = ping + ' ms';
+        status.textContent = 'Testing download...';
+        gauge.style.width = '30%';
+        
+        const download = await testDownload();
+        document.getElementById('speedDownload').textContent = download + ' Mbps';
+        status.textContent = 'Testing upload...';
+        gauge.style.width = '60%';
+        
+        const upload = await testUpload();
+        document.getElementById('speedUpload').textContent = upload + ' Mbps';
+        status.textContent = 'Complete!';
+        gauge.style.width = '100%';
+      } catch (e) {
+        status.textContent = 'Test failed: ' + e.message;
+      }
+      
+      btn.disabled = false;
+      btn.innerHTML = '<span>▶</span> Test Again';
+    }
+
+    async function testPing() {
+      const times = [];
+      for (let i = 0; i < 5; i++) {
+        const start = performance.now();
+        await fetch('https://www.google.com/favicon.ico?' + Date.now(), { mode: 'no-cors', cache: 'no-store' });
+        times.push(performance.now() - start);
+      }
+      return Math.round(times.sort((a, b) => a - b)[2]);
+    }
+
+    async function testDownload() {
+      const testFile = 'https://speed.cloudflare.com/__down?bytes=5000000';
+      const start = performance.now();
+      await fetch(testFile, { mode: 'no-cors', cache: 'no-store' });
+      const duration = (performance.now() - start) / 1000;
+      const bitsLoaded = 5000000 * 8;
+      const speedBps = bitsLoaded / duration;
+      return Math.round(speedBps / 1000000 * 10) / 10;
+    }
+
+    async function testUpload() {
+      const data = new Uint8Array(500000);
+      const start = performance.now();
+      await fetch('https://speed.cloudflare.com/__up', {
+        method: 'POST',
+        body: data,
+        mode: 'no-cors'
+      });
+      const duration = (performance.now() - start) / 1000;
+      const bitsSent = 500000 * 8;
+      const speedBps = bitsSent / duration;
+      return Math.round(speedBps / 1000000 * 10) / 10;
     }
 
     searchBtn.addEventListener('click', doSearch);
