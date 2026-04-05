@@ -23,7 +23,7 @@ if (empty($query)) {
     exit;
 }
 
-$searxUrl = getenv('SEARX_URL') ?: 'https://synapse-browser.onrender.com';
+$searxUrl = getenv('SEARX_URL') ?: 'https://synapse-searx.onrender.com';
 
 // Check if this is a person search
 $isPerson = isPersonSearch($query);
