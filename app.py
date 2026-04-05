@@ -3,11 +3,12 @@ import httpx
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from urllib.parse import urljoin
 import json
 
 app = FastAPI()
 
-SEARX_URL = os.getenv("SEARX_URL", "https://synapse-searx.onrender.com/")
+SEARX_URL = os.getenv("SEARX_URL", "https://synapse-searx.onrender.com")
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
@@ -17,9 +18,10 @@ async def root():
 @app.get("/api.php")
 async def api_proxy(q: str):
     try:
+        search_url = urljoin(SEARX_URL.rstrip("/") + "/", "search")
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.get(
-                f"{SEARX_URL}search",
+                search_url,
                 params={
                     "q": q,
                     "format": "json",
@@ -49,7 +51,7 @@ async def api_proxy(q: str):
                     "isPersonSearch": False
                 })
             else:
-                return JSONResponse({"error": "Search failed"}, status_code=500)
+                return JSONResponse({"error": f"Search failed: {response.status_code}"}, status_code=500)
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
