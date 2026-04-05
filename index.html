@@ -86,23 +86,21 @@
     .header-logo-wrap:hover {
         transform: scale(1.02);
     }
-
-    .tagline {
-        font-family: var(--serif);
-        font-size: 2.5rem;
-        font-weight: 400;
-        margin-bottom: 0.5rem;
-        color: var(--text);
-        letter-spacing: -0.02em;
+    .header-logo {
+      color: var(--text);
+      height: auto;
     }
-    
-    .sub-tagline {
-        font-size: 1.1rem;
-        color: var(--text-2);
-        max-width: 500px;
-        line-height: 1.5;
-        font-weight: 400;
+    .logo {
+      font-family: var(--mono); font-size: 13px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2);
     }
+    .logo strong { color: var(--text); font-weight: 500; }
+    .status-dot {
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: #1D9E75; margin-right: 7px;
+      animation: pulse 2.6s ease-in-out infinite;
+    }
+    .header-meta { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
 
     .search-wrap {
       max-width: 680px; margin: 0 auto 3.5rem;
@@ -188,6 +186,98 @@
       box-shadow: var(--shadow-md);
     }
 
+    .speedtest-card {
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .speedtest-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+    }
+    .speedtest-icon {
+      font-size: 32px;
+    }
+    .speedtest-info {
+      flex: 1;
+    }
+    .speedtest-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .speedtest-subtitle {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+    }
+    .speedtest-card-body {
+      padding: 20px;
+    }
+    .speedtest-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .speedtest-stat {
+      text-align: center;
+    }
+    .speedtest-stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .speedtest-stat-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+    .speedtest-btn {
+      width: 100%;
+      background: var(--bg-tertiary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .speedtest-btn:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .speedtest-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .speedtest-gauge {
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .speedtest-gauge-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1DB954, #1ed760);
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 3px;
+    }
+
     @media (max-width: 900px) {
       .layout.has-info { grid-template-columns: 1fr; }
       .info-card { position: static; }
@@ -197,22 +287,11 @@
 </head>
 <body>
   <div class="shell">
-    <header class="header">
-      <div class="header-logo-wrap">
-        <svg viewBox="0 0 120 120" width="80" height="80">
-          <circle cx="60" cy="60" r="50" fill="none" stroke="var(--border-2)" stroke-width="1"/>
-          <circle cx="60" cy="60" r="20" fill="var(--accent)"/>
-          <g stroke="var(--text-3)" stroke-width="2">
-            <line x1="60" y1="20" x2="60" y2="40"/>
-            <line x1="60" y1="80" x2="60" y2="100"/>
-            <line x1="20" y1="60" x2="40" y2="60"/>
-            <line x1="80" y1="60" x2="100" y2="60"/>
-          </g>
-        </svg>
-      </div>
-      <h1 class="tagline">Search with intent.</h1>
-      <p class="sub-tagline">A minimalist, privacy-first search experience powered by Synapse.</p>
-    </header>
+
+    <div class="header">
+      <div class="logo"><span class="status-dot"></span><strong>Williams</strong> Browser</div>
+      <div class="header-meta" id="indexMeta">powered by Searx</div>
+    </div>
 
     <div class="search-wrap">
       <div class="search-box">
@@ -226,8 +305,50 @@
     </div>
 
     <div class="layout" id="layout">
-      <div class="results-col" id="results">
-        <!-- Results will appear here -->
+      <div class="results-col">
+        <div class="result-count" id="resultCount"></div>
+        <div class="skeleton" id="skeleton">
+          <div class="skeleton-card"><div class="skel skel-sm"></div><div class="skel skel-md"></div><div class="skel skel-lg"></div><div class="skel skel-lg2"></div></div>
+          <div class="skeleton-card"><div class="skel skel-sm"></div><div class="skel skel-md"></div><div class="skel skel-lg"></div><div class="skel skel-lg2"></div></div>
+          <div class="skeleton-card"><div class="skel skel-sm"></div><div class="skel skel-md"></div><div class="skel skel-lg"></div><div class="skel skel-lg2"></div></div>
+        </div>
+        <div class="results" id="results"></div>
+        <div class="empty-state" id="emptyState">no results found</div>
+      </div>
+
+      <div class="info-col">
+        <div class="github-card" id="githubCard">
+          <div class="github-card-header">
+            <img class="github-avatar" id="githubAvatar" src="" alt="avatar">
+            <div class="github-info">
+              <div class="github-name" id="githubName">Loading...</div>
+              <div class="github-username" id="githubUsername"></div>
+            </div>
+          </div>
+          <div class="github-bio" id="githubBio"></div>
+          <div class="github-stats" id="githubStats"></div>
+          <div class="github-links" id="githubLinks"></div>
+          <div class="github-repos" id="githubRepos">
+            <div class="github-repo"><div class="github-repo-icon">📁</div><div class="github-repo-name">repo</div></div>
+            <div class="github-repo"><div class="github-repo-icon">📁</div><div class="github-repo-name">repo</div></div>
+            <div class="github-repo"><div class="github-repo-icon">📁</div><div class="github-repo-name">repo</div></div>
+          </div>
+        </div>
+
+        <div class="info-card" id="infoCard">
+          <div class="info-card-header">
+            <div class="info-avatar-placeholder" id="infoAvatar"></div>
+            <div class="info-header-text">
+              <h2 id="infoName">Loading...</h2>
+              <p id="infoSubtitle"></p>
+            </div>
+          </div>
+          <div class="info-card-body">
+            <p class="info-description" id="infoDescription"></p>
+            <div class="info-stats" id="infoStats"></div>
+            <div class="info-links" id="infoLinks"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -237,33 +358,295 @@
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const resultsEl = document.getElementById('results');
+    const skeletonEl = document.getElementById('skeleton');
+    const resultCountEl = document.getElementById('resultCount');
+    const emptyStateEl = document.getElementById('emptyState');
+    const layout = document.getElementById('layout');
+    const infoCard = document.getElementById('infoCard');
+    const githubCard = document.getElementById('githubCard');
+    const infoName = document.getElementById('infoName');
+    const infoSubtitle = document.getElementById('infoSubtitle');
+    const infoDescription = document.getElementById('infoDescription');
+    const infoStats = document.getElementById('infoStats');
+    const infoLinks = document.getElementById('infoLinks');
+    const infoAvatar = document.getElementById('infoAvatar');
 
-    searchBtn.addEventListener('click', () => {
-        const query = searchInput.value;
-        if (!query) return;
+    let startTime = 0;
+    let isAnimating = false;
+
+    function doSearch() {
+      if (isAnimating) return;
+      const q = searchInput.value.trim();
+      if (!q) return;
+
+      isAnimating = true;
+      searchBtn.disabled = true;
+      searchBtn.textContent = 'Searching...';
+      startTime = Date.now();
+
+      // Animate out existing results one by one
+      const existingCards = document.querySelectorAll('.result-card.visible');
+      
+      if (existingCards.length > 0) {
+        // Slide out each card with delay
+        existingCards.forEach((card, i) => {
+          setTimeout(() => {
+            card.classList.add('slide-out');
+          }, i * 80);
+        });
         
-        resultsEl.innerHTML = '<p style="text-align:center; color:var(--text-3)">Searching...</p>';
-        
-        // Simulate search results
+        // After all cards slide out, fetch new results
+        const outDelay = existingCards.length * 80 + 300;
+        setTimeout(() => fetchResults(q), outDelay);
+      } else {
+        // No existing cards, fetch immediately
+        fetchResults(q);
+      }
+    }
+
+    function fetchResults(q) {
+      // Reset layout
+      layout.classList.remove('has-info');
+      infoCard.classList.remove('visible');
+      githubCard.classList.remove('visible');
+      
+      resultsEl.innerHTML = '';
+      resultsEl.style.display = 'flex';
+      skeletonEl.style.display = 'flex';
+      resultCountEl.textContent = 'searching...';
+      emptyStateEl.style.display = 'none';
+
+      fetch(`api.php?q=${encodeURIComponent(q)}`)
+        .then(r => r.json())
+        .then(data => renderResults(data, q))
+        .catch(err => {
+          console.error('Search error:', err);
+          skeletonEl.style.display = 'none';
+          emptyStateEl.style.display = 'block';
+          resultCountEl.textContent = 'search failed';
+          isAnimating = false;
+          searchBtn.disabled = false;
+          searchBtn.textContent = 'Search';
+        });
+    }
+
+    function renderResults(data, query) {
+      skeletonEl.style.display = 'none';
+      
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+      resultCountEl.textContent = `${data.total || 0} results · ${elapsed}s`;
+      resultCountEl.classList.remove('flip');
+      void resultCountEl.offsetWidth;
+      resultCountEl.classList.add('flip');
+
+      if (!data.results || data.results.length === 0) {
+        emptyStateEl.style.display = 'block';
+        isAnimating = false;
+        searchBtn.disabled = false;
+        searchBtn.textContent = 'Search';
+        return;
+      }
+
+      emptyStateEl.style.display = 'none';
+
+      // Check if any profile cards should be shown
+      const hasProfiles = data.githubProfile || data.wikipediaInfo;
+
+      if (hasProfiles) {
+        renderWithAllProfiles(data, query);
+      } else {
+        renderSimpleResults(data.results, query);
+      }
+    }
+
+    function renderWithAllProfiles(data, query) {
+      // Reset all card orders
+      githubCard.style.order = '100';
+      infoCard.style.order = '100';
+      
+      // Determine order based on which profiles exist (lower = first)
+      let order = 0;
+      if (data.githubProfile) githubCard.style.order = order++;
+      if (data.wikipediaInfo) infoCard.style.order = order++;
+
+      // Update Wikipedia info card
+      if (data.wikipediaInfo) {
+        infoName.textContent = data.wikipediaInfo.name || 'Unknown';
+        infoSubtitle.textContent = 'Wikipedia';
+        infoDescription.textContent = data.wikipediaInfo.description || '';
+        infoAvatar.innerHTML = getInitials(data.wikipediaInfo.name);
+        infoLinks.innerHTML = `<a href="${data.wikipediaInfo.url}" class="info-link" target="_blank" rel="noopener">Read on Wikipedia</a>`;
+        infoStats.innerHTML = '';
+        infoCard.classList.add('visible');
+      }
+
+      // Update GitHub card
+      if (data.githubProfile) {
+        const profile = data.githubProfile;
+        document.getElementById('githubAvatar').src = profile.avatar || '';
+        document.getElementById('githubAvatar').onerror = function() {
+          this.style.display = 'none';
+          this.parentElement.innerHTML = `<div class="info-avatar-placeholder" style="width:80px;height:80px;font-size:28px;">${getInitials(profile.name || profile.username)}</div>`;
+        };
+        document.getElementById('githubName').textContent = profile.name || profile.username || 'Unknown';
+        document.getElementById('githubUsername').textContent = '@' + (profile.username || '');
+        document.getElementById('githubBio').textContent = profile.bio || 'No bio available';
+        document.getElementById('githubStats').innerHTML = `
+          <div class="github-stat">
+            <span class="github-stat-value">${formatNumber(profile.followers)}</span>
+            <span class="github-stat-label">Followers</span>
+          </div>
+          <div class="github-stat">
+            <span class="github-stat-value">${formatNumber(profile.following)}</span>
+            <span class="github-stat-label">Following</span>
+          </div>
+          <div class="github-stat">
+            <span class="github-stat-value">${formatNumber(profile.publicRepos)}</span>
+            <span class="github-stat-label">Repos</span>
+          </div>
+        `;
+        let linksHTML = `<a href="${profile.url}" class="github-link" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>`;
+        if (profile.location) linksHTML += `<span class="github-link">📍 ${profile.location}</span>`;
+        if (profile.company) linksHTML += `<span class="github-link">🏢 ${profile.company}</span>`;
+        if (profile.blog) linksHTML += `<a href="${profile.blog}" class="github-link" target="_blank" rel="noopener">🌐 Website</a>`;
+        document.getElementById('githubLinks').innerHTML = linksHTML;
+        githubCard.classList.add('visible');
+      }
+
+      // Render results
+      resultsEl.innerHTML = data.results.map((r, i) => {
+        const domain = extractDomain(r.url);
+        return `
+          <a href="${escapeHtml(r.url)}" class="result-card" target="_blank" rel="noopener" style="opacity: 0;">
+            <div class="result-top">
+              <div class="favicon" style="background:${getFaviconBg(domain)};color:${getFaviconColor(domain)};">${getInitials(domain)}</div>
+              <span class="result-domain">${escapeHtml(domain)}</span>
+            </div>
+            <div class="result-title">${highlightQuery(r.title, query)}</div>
+            ${r.snippet ? `<div class="result-snippet">${highlightQuery(r.snippet, query)}</div>` : ''}
+          </a>
+        `;
+      }).join('');
+
+      const resultCards = resultsEl.querySelectorAll('.result-card');
+
+      resultCards.forEach((card, i) => {
         setTimeout(() => {
-            resultsEl.innerHTML = `
-                <a href="#" class="result-card">
-                    <span class="result-domain">SYNAPSE.APP</span>
-                    <h3 class="result-title">Understanding Minimalist Design in 2026</h3>
-                    <p class="result-snippet">Explore how brands like Anthropic and Apple are redefining the web with clean, focused interfaces...</p>
-                </a>
-                <a href="#" class="result-card">
-                    <span class="result-domain">WIKIPEDIA.ORG</span>
-                    <h3 class="result-title">Synapse (Biology)</h3>
-                    <p class="result-snippet">In the nervous system, a synapse is a structure that permits a neuron to pass an electrical or chemical signal...</p>
-                </a>
-            `;
-        }, 800);
+          card.style.opacity = '';
+          card.classList.add('visible');
+        }, i * 100);
+      });
+
+      const infoDelay = resultCards.length * 100 + 200;
+
+      setTimeout(() => {
+        layout.classList.add('has-info');
+      }, infoDelay);
+
+      setTimeout(() => {
+        isAnimating = false;
+        searchBtn.disabled = false;
+        searchBtn.textContent = 'Search';
+      }, infoDelay + 300);
+    }
+
+    function formatNumber(num) {
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+      return num.toString();
+    }
+
+    function renderSimpleResults(results, query) {
+      // Render results
+      resultsEl.innerHTML = results.map((r, i) => {
+        const domain = extractDomain(r.url);
+        return `
+          <a href="${escapeHtml(r.url)}" class="result-card" target="_blank" rel="noopener" style="opacity: 0;">
+            <div class="result-top">
+              <div class="favicon" style="background:${getFaviconBg(domain)};color:${getFaviconColor(domain)};">${getInitials(domain)}</div>
+              <span class="result-domain">${escapeHtml(domain)}</span>
+            </div>
+            <div class="result-title">${highlightQuery(r.title, query)}</div>
+            ${r.snippet ? `<div class="result-snippet">${highlightQuery(r.snippet, query)}</div>` : ''}
+          </a>
+        `;
+      }).join('');
+
+      const resultCards = resultsEl.querySelectorAll('.result-card');
+      
+      // Animate cards in one by one
+      resultCards.forEach((card, i) => {
+        setTimeout(() => {
+          card.style.opacity = '';
+          card.classList.add('visible');
+        }, i * 100);
+      });
+
+      setTimeout(() => {
+        isAnimating = false;
+        searchBtn.disabled = false;
+        searchBtn.textContent = 'Search';
+      }, resultCards.length * 100 + 100);
+    }
+
+    function extractDomain(url) {
+      try {
+        return new URL(url).hostname.replace('www.', '');
+      } catch {
+        return url;
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function highlightQuery(text, query) {
+      if (!text || !query) return escapeHtml(text || '');
+      const words = query.split(/\s+/).filter(w => w.length > 2);
+      let result = escapeHtml(text);
+      words.forEach(word => {
+        const regex = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        result = result.replace(regex, '<mark>$1</mark>');
+      });
+      return result;
+    }
+
+    function getFaviconBg(domain) {
+      const colors = ['#0C447C', '#3C3489', '#633806', '#712B13', '#27500A', '#444441'];
+      const hash = domain.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+      return colors[hash % colors.length];
+    }
+
+    function getFaviconColor(domain) {
+      const colors = ['#B5D4F4', '#CECBF6', '#FAC775', '#F5C4B3', '#C0DD97', '#D3D1C7'];
+      const hash = domain.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+      return colors[hash % colors.length];
+    }
+
+    function getInitials(text) {
+      if (!text) return '??';
+      return text.split(' ').map(w => w[0]).filter(Boolean).join('').substring(0, 2).toUpperCase();
+    }
+
+    searchBtn.addEventListener('click', doSearch);
+    searchInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') doSearch();
     });
 
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') searchBtn.click();
-    });
+    if (window.location.search) {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('q');
+      if (q) {
+        searchInput.value = q;
+        doSearch();
+      }
+    }
   </script>
 </body>
 </html>
