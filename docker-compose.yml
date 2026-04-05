@@ -1,0 +1,27 @@
+services:
+  searx:
+    image: searxng/searxng:latest
+    container_name: searx
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./searx:/etc/searxng
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8080/
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+
+  api:
+    image: php:apache
+    container_name: williams-browser-api
+    ports:
+      - "3000:80"
+    volumes:
+      - ./index.html:/var/www/html/index.html
+      - ./api.php:/var/www/html/api.php
+    environment:
+      - SEARX_URL=http://searx:8080
+    depends_on:
+      - searx
+    restart: unless-stopped
