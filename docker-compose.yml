@@ -12,6 +12,15 @@ services:
     cap_drop:
       - ALL
 
+  speedtest:
+    build:
+      context: .
+      dockerfile: speedtest.Dockerfile
+    container_name: speedtest
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+
   api:
     image: php:apache
     container_name: williams-browser-api
@@ -22,6 +31,8 @@ services:
       - ./api.php:/var/www/html/api.php
     environment:
       - SEARX_URL=http://searx:8080
+      - SPEEDTEST_URL=http://speedtest
     depends_on:
       - searx
+      - speedtest
     restart: unless-stopped
