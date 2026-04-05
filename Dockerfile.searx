@@ -1,0 +1,5 @@
+FROM searxng/searxng:latest
+
+ENV BASE_URL=https://synapse-searx.onrender.com/
+
+EXPOSE 8080
