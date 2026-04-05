@@ -1,9 +1,0 @@
-FROM searxng/searxng:latest
-
-ENV BASE_URL=https://synapse-searx.onrender.com/
-ENV SEARXNG_LIMITER=false
-
-COPY searx/settings.yml /etc/searxng/settings.yml
-COPY searx/limiter.toml /etc/searxng/limiter.toml
-
-EXPOSE 8080

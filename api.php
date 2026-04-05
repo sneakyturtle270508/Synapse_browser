@@ -9,13 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 $query = isset($_GET['q']) ? trim($_GET['q']) : '';
-$action = isset($_GET['action']) ? $_GET['action'] : '';
-
-// Speed test endpoint - redirects to fast.com
-if ($action === 'speedtest') {
-    echo json_encode(['redirect' => 'https://fast.com']);
-    exit;
-}
 
 if (empty($query)) {
     http_response_code(400);
@@ -23,7 +16,7 @@ if (empty($query)) {
     exit;
 }
 
-$searxUrl = getenv('SEARX_URL') ?: 'https://synapse-searx.onrender.com';
+$searxUrl = getenv('SEARX_URL') ?: 'http://searx:8080';
 
 // Check if this is a person search
 $isPerson = isPersonSearch($query);
