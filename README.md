@@ -1,4 +1,5 @@
-# Williams Browser
+
+<img width="867" height="288" alt="Screenshot_2026-04-02_at_20 39 34-removebg-preview" src="https://github.com/user-attachments/assets/76da60d6-b1cc-4f02-8252-75b2b3fe9714" />
 
 A private search engine powered by Searx, deployed with Docker.
 
