@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir fastapi uvicorn httpx jinja2
 COPY app.py /app/
 COPY index.html /app/
 COPY api.php /app/
-COPY logo.png /app/ 2>/dev/null || true
+# logo.png is optional; if not provided in context, skip copy
 
 EXPOSE 7860
 

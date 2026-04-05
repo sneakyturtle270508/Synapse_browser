@@ -7,23 +7,15 @@ services:
     volumes:
       - ./searx:/etc/searxng
     environment:
-      - SEARXNG_BASE_URL=http://localhost:8080/
+      - SEARXNG_BASE_URL=http://searx:8080/
     restart: unless-stopped
     cap_drop:
       - ALL
-
-  speedtest:
-    build:
-      context: .
-      dockerfile: speedtest.Dockerfile
-    container_name: speedtest
-    ports:
-      - "8081:80"
-    restart: unless-stopped
+    network_mode: bridge
 
   api:
     image: php:apache
-    container_name: williams-browser-api
+    container_name: synapse-api
     ports:
       - "3000:80"
     volumes:
@@ -31,8 +23,7 @@ services:
       - ./api.php:/var/www/html/api.php
     environment:
       - SEARX_URL=http://searx:8080
-      - SPEEDTEST_URL=http://speedtest
     depends_on:
       - searx
-      - speedtest
     restart: unless-stopped
+    network_mode: bridge

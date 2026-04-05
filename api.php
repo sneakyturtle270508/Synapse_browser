@@ -23,7 +23,12 @@ if (empty($query)) {
     exit;
 }
 
-$searxUrl = getenv('SEARX_URL') ?: 'http://searx:8080';
+$searxUrl = getenv('SEARX_URL');
+if (!$searxUrl) {
+    http_response_code(500);
+    echo json_encode(['error' => 'SEARX_URL is not configured. Set SEARX_URL in the Render environment to point to your SearXNG backend.']);
+    exit;
+}
 
 // Check if this is a person search
 $isPerson = isPersonSearch($query);

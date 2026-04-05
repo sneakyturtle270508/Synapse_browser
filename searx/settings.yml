@@ -19,6 +19,7 @@ server:
   secret_key: "CHANGE_ME_TO_RANDOM_STRING"
   bind_address: "0.0.0.0"
   port: 8080
+  enable_cors: true
   limiter: false
   image_proxy: true
   http_protocol_version: "1.1"
