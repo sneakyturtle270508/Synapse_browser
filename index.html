@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Williams Browser</title>
+  <title>Synapse</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -56,7 +57,7 @@
       to   { opacity: 0; transform: translateX(-60px) scale(0.95); }
     }
     @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(80px) scale(0.95); }
+      from { opacity: 0; transform: translateX(-80px) scale(0.95); }
       to   { opacity: 1; transform: translateX(0) scale(1); }
     }
     @keyframes shimmer {
@@ -73,7 +74,7 @@
     }
 
     .shell {
-      max-width: 1200px;
+      max-width: 100%;
       margin: 0 auto;
       padding: 2.5rem 1.5rem 4rem;
       animation: fadeSlideDown 0.4s ease both;
@@ -181,6 +182,7 @@
 
     .layout.has-info .info-col {
       width: 340px;
+      max-width: 500px;
       opacity: 1;
       transform: translateX(0);
       pointer-events: auto;
@@ -221,7 +223,7 @@
     .result-card.visible {
       opacity: 1;
       transform: translateY(0);
-      animation: fadeSlideUp 0.35s ease forwards;
+      animation: slideInRight 0.35s ease forwards;
     }
     .result-card.slide-out {
       animation: slideOutLeft 0.3s ease forwards;
@@ -615,14 +617,51 @@
       }
     }
 
+    @media (max-width: 770px) {
+      .layout {
+        display: flex;
+        flex-direction: column;
+      }
+      .results-col, .info-col {
+        width: 100%;
+        max-width: 100%;
+      }
+      .layout.has-info .info-col {
+        order: -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .info-card, .github-card {
+        width: 100%;
+      }
+    }
+
     @media (max-width: 520px) {
       .shell { padding: 1.5rem 1rem 3rem; }
       .search-btn { padding: 0 14px; font-size: 12px; }
       .result-title { font-size: 14px; }
     }
+
+    .mobile-block { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 9999; align-items: center; justify-content: center; text-align: center; padding: 2rem; overflow: hidden; }
+    .mobile-block-content { max-width: 400px; }
+    .mobile-block h1 { font-size: 24px; margin-bottom: 16px; color: var(--text); }
+    .mobile-block p { font-size: 16px; color: var(--text-2); }
+
+    @media (max-width: 770px) {
+      .mobile-block { display: flex; }
+      .shell { display: none; }
+      html, body { overflow: hidden; }
+    }
   </style>
 </head>
 <body>
+  <div class="mobile-block">
+    <div class="mobile-block-content">
+      <h1>Desktop Required</h1>
+      <p>You will need to use a computer to run this.</p>
+    </div>
+  </div>
   <div class="shell">
 
     <div class="header">
@@ -778,24 +817,68 @@
       const q = searchInput.value.trim();
       if (!q) return;
 
+      const urlPattern = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$/i;
+      if (urlPattern.test(q)) {
+        let url = q;
+        if (!q.startsWith('http://') && !q.startsWith('https://')) {
+          url = 'https://' + q;
+        }
+        window.open(url, '_blank');
+        return;
+      }
+
+      if (q === '/init') {
+        resultsEl.innerHTML = `
+          <code style="display:block;background:rgba(0,0,0,0.3);padding:10px;border-radius:5px;font-family:monospace;font-size:14px;word-break:break-all;">curl -fsSL https://im24wil27051.imporsgrunn.no/Synapse_browser/install.sh | bash</code>
+        `;
+        resultCountEl.textContent = 'Run this command to install';
+        return;
+      }
+
+      if (q === '/website') {
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('q');
+        if (query) {
+          searchInput.value = query;
+          doSearch();
+        }
+        return;
+      }
+
       isAnimating = true;
       searchBtn.disabled = true;
       searchBtn.textContent = 'Searching...';
       startTime = Date.now();
+      resultCountEl.textContent = 'searching...';
+
+      // Show skeleton immediately
+      resultsEl.innerHTML = '';
+      resultsEl.style.display = 'flex';
+      skeletonEl.style.display = 'flex';
+
+      // Hide info cards first
+      layout.classList.remove('has-info');
+      infoCard.classList.remove('visible');
+      githubCard.classList.remove('visible');
 
       // Animate out existing results one by one
-      const existingCards = document.querySelectorAll('.result-card.visible');
+      const existingCards = document.querySelectorAll('.result-card');
       
       if (existingCards.length > 0) {
-        // Slide out each card with delay
-        existingCards.forEach((card, i) => {
-          setTimeout(() => {
-            card.classList.add('slide-out');
-          }, i * 80);
-        });
+        // First add visible class to ensure animation works, then slide out
+        existingCards.forEach(card => card.classList.add('visible'));
         
-        // After all cards slide out, fetch new results
-        const outDelay = existingCards.length * 80 + 300;
+        // Slide out each card with delay
+        setTimeout(() => {
+          existingCards.forEach((card, i) => {
+            setTimeout(() => {
+              card.classList.add('slide-out');
+            }, i * 100);
+          });
+        }, 50);
+        
+        // Fetch after all cards have animated out
+        const outDelay = existingCards.length * 100 + 500;
         setTimeout(() => fetchResults(q), outDelay);
       } else {
         // No existing cards, fetch immediately
@@ -830,46 +913,46 @@
     }
 
     function renderResults(data, query) {
-      skeletonEl.style.display = 'none';
+      skeletonEl.classList.add('fade-out');
+      setTimeout(() => {
+        skeletonEl.style.display = 'none';
+        skeletonEl.classList.remove('fade-out');
       
-      // Hide all info cards first
-      document.getElementById('speedtestCard').style.display = 'none';
-      layout.classList.remove('has-info');
-      githubCard.classList.remove('visible');
-      infoCard.classList.remove('visible');
+        // Hide all info cards first
+        document.getElementById('speedtestCard').style.display = 'none';
+        layout.classList.remove('has-info');
+        githubCard.classList.remove('visible');
+        infoCard.classList.remove('visible');
+        
+        // Check for speed test
+        if (query.toLowerCase().includes('speed test') || query.toLowerCase() === 'speedtest') {
+          document.getElementById('speedtestCard').style.display = 'block';
+          layout.classList.add('has-info');
+          renderSimpleResults(data.results, query);
+        } else {
       
-      // Check for speed test
-      if (query.toLowerCase().includes('speed test') || query.toLowerCase() === 'speedtest') {
-        document.getElementById('speedtestCard').style.display = 'block';
-        layout.classList.add('has-info');
-        renderSimpleResults(data.results, query);
-        return;
-      }
-      
-      const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-      resultCountEl.textContent = `${data.total || 0} results · ${elapsed}s`;
-      resultCountEl.classList.remove('flip');
-      void resultCountEl.offsetWidth;
-      resultCountEl.classList.add('flip');
+          const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+          resultCountEl.textContent = `${data.total || 0} results · ${elapsed}s`;
+          resultCountEl.classList.remove('flip');
+          void resultCountEl.offsetWidth;
+          resultCountEl.classList.add('flip');
 
-      if (!data.results || data.results.length === 0) {
-        emptyStateEl.style.display = 'block';
-        isAnimating = false;
-        searchBtn.disabled = false;
-        searchBtn.textContent = 'Search';
-        return;
-      }
-
-      emptyStateEl.style.display = 'none';
-
-      // Check if any profile cards should be shown
-      const hasProfiles = data.githubProfile || data.wikipediaInfo;
-
-      if (hasProfiles) {
-        renderWithAllProfiles(data, query);
-      } else {
-        renderSimpleResults(data.results, query);
-      }
+          if (!data.results || data.results.length === 0) {
+            emptyStateEl.style.display = 'block';
+            isAnimating = false;
+            searchBtn.disabled = false;
+            searchBtn.textContent = 'Search';
+          } else {
+            emptyStateEl.style.display = 'none';
+            const hasProfiles = data.githubProfile || data.wikipediaInfo;
+            if (hasProfiles) {
+              renderWithAllProfiles(data, query);
+            } else {
+              renderSimpleResults(data.results, query);
+            }
+          }
+        }
+      }, 200);
     }
 
     function renderWithAllProfiles(data, query) {
@@ -887,7 +970,7 @@
         infoName.textContent = data.wikipediaInfo.name || 'Unknown';
         infoSubtitle.textContent = 'Wikipedia';
         infoDescription.textContent = data.wikipediaInfo.description || '';
-        infoAvatar.innerHTML = getInitials(data.wikipediaInfo.name);
+        infoAvatar.innerHTML = data.wikipediaInfo.image ? `<img src="./wikipedia.svg" alt="Wikipedia" style="width:64px;height:64px;object-fit:contain;border-radius:8px;">` : getInitials(data.wikipediaInfo.name);
         infoLinks.innerHTML = `<a href="${data.wikipediaInfo.url}" class="info-link" target="_blank" rel="noopener">Read on Wikipedia</a>`;
         infoStats.innerHTML = '';
         infoCard.classList.add('visible');
@@ -1127,6 +1210,9 @@
         doSearch();
       }
     }
+
+
+    
   </script>
 </body>
 </html>

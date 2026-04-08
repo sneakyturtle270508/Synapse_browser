@@ -19,6 +19,7 @@ services:
       - "3000:80"
     volumes:
       - ./index.html:/var/www/html/index.html
+      - ./favicon.ico:/var/www/html/favicon.ico
       - ./api.php:/var/www/html/api.php
     environment:
       - SEARX_URL=http://searx:8080

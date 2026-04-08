@@ -38,7 +38,8 @@ foreach ($results as $r) {
         $wikipediaInfo = [
             'name' => $r['title'],
             'description' => $r['snippet'],
-            'url' => $r['url']
+            'url' => $r['url'],
+            'image' => 'https://en.wikipedia.org/static/images/project-logos/enwiki.png'
         ];
     }
 }
@@ -238,7 +239,7 @@ function searchSearx($searxUrl, $query) {
     }
     
     $results = [];
-    foreach (array_slice($data['results'], 0, 30) as $result) {
+    foreach (array_slice($data['results'], 0, 70) as $result) {
         $title = $result['title'] ?? '';
         $url = $result['url'] ?? '';
         $snippet = $result['content'] ?? '';
@@ -260,6 +261,7 @@ function searchSearx($searxUrl, $query) {
     return $results;
 }
 
+# Simple function to filter out adult content based on keywords in title, URL, and snippet
 function isAdultContent($title, $url, $snippet) {
     $adultDomains = [
         'porn', 'xxx', 'sex', 'nude', 'naked', 'erotic', 'adult',

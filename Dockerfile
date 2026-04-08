@@ -11,6 +11,7 @@ RUN pip install --no-cache-dir fastapi uvicorn httpx jinja2
 # Copy application files
 COPY app.py /app/
 COPY index.html /app/
+COPY favicon.ico /app/
 COPY api.php /app/
 # logo.png is optional; if not provided in context, skip copy
 
