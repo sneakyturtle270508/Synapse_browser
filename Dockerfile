@@ -1,7 +1,7 @@
-# Synapse Browser - Hugging Face Spaces
+# Synapse Browser
 # Serves the search UI with proxy to public Searx
 
-FROM python:3.11-slim
+FROM python:3.12
 
 WORKDIR /app
 
