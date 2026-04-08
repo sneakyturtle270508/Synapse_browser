@@ -16,25 +16,30 @@ if (empty($query)) {
     exit;
 }
 
-$searxUrl = getenv('SEARX_URL') ?: 'https://searxng-1-nzqi.onrender.com';
+$searxUrl = getenv('SEARX_URL') ?: 'http://searx:8080';
 
+// Check if this is a person search
 $isPerson = isPersonSearch($query);
 $githubProfile = null;
 $wikipediaInfo = null;
 $results = [];
 
+// Only search for GitHub profile if query looks like a person's name or username
 if (isLikelyPersonName($query) || isLikelyUsername($query)) {
     $githubProfile = findGitHubProfile($query);
 }
 
+// Always get search results
 $results = searchSearx($searxUrl, $query);
 
+// Extract Wikipedia info from results
 foreach ($results as $r) {
     if (!$wikipediaInfo && (strpos($r['url'], 'wikipedia.org') !== false || strpos($r['url'], 'wikidata.org') !== false)) {
         $wikipediaInfo = [
             'name' => $r['title'],
             'description' => $r['snippet'],
-            'url' => $r['url']
+            'url' => $r['url'],
+            'image' => 'https://en.wikipedia.org/static/images/project-logos/enwiki.png'
         ];
     }
 }
@@ -51,8 +56,11 @@ echo json_encode([
 function isLikelyPersonName($query) {
     $words = explode(' ', trim($query));
     if (count($words) < 2 || count($words) > 4) return false;
+    
     foreach ($words as $word) {
-        if (!ctype_alpha($word) || !ctype_upper(substr($word, 0, 1))) return false;
+        if (!ctype_alpha($word) || !ctype_upper(substr($word, 0, 1))) {
+            return false;
+        }
     }
     return true;
 }
@@ -66,20 +74,25 @@ function isLikelyUsername($query) {
 
 function isPersonSearch($query) {
     $personIndicators = [
-        'actor','actress','singer','musician','artist','painter',
-        'president','prime minister','ceo','founder','entrepreneur','billionaire',
-        'footballer','basketball','tennis','player','coach','champion',
-        'scientist','physicist','chemist','biologist','doctor','professor',
-        'author','writer','poet','novelist','journalist',
-        'politician','governor','mayor','senator','representative',
-        'comedian','director','producer','filmmaker',
-        'inventor','engineer','architect','designer',
-        'rapper','dj','celebrity','developer','programmer'
+        'actor', 'actress', 'singer', 'musician', 'artist', 'painter',
+        'president', 'prime minister', 'ceo', 'founder', 'entrepreneur', 'billionaire',
+        'footballer', 'basketball', 'tennis', 'player', 'coach', 'champion',
+        'scientist', 'physicist', 'chemist', 'biologist', 'doctor', 'professor',
+        'author', 'writer', 'poet', 'novelist', 'journalist',
+        'politician', 'governor', 'mayor', 'senator', 'representative',
+        'comedian', 'director', 'producer', 'filmmaker',
+        'inventor', 'engineer', 'architect', 'designer',
+        'rapper', 'dj', 'celebrity', 'developer', 'programmer'
     ];
+    
     $queryLower = strtolower($query);
     foreach ($personIndicators as $indicator) {
-        if (strpos($queryLower, $indicator) !== false) return true;
+        if (strpos($queryLower, $indicator) !== false) {
+            return true;
+        }
     }
+    
+    // Check for name-like patterns
     $words = explode(' ', $query);
     if (count($words) >= 2 && count($words) <= 4) {
         $allCapitalized = true;
@@ -91,30 +104,45 @@ function isPersonSearch($query) {
         }
         if ($allCapitalized) return true;
     }
+    
     return false;
 }
 
 function findGitHubProfile($query) {
+    // Extract potential username from query
     $words = explode(' ', $query);
+    
+    // Generate possible usernames
     $usernames = generateUsernames($words);
     $usernames = array_unique($usernames);
+    
     foreach ($usernames as $username) {
         $profile = fetchGitHubProfile($username);
-        if ($profile) return $profile;
+        if ($profile) {
+            return $profile;
+        }
     }
+    
     return null;
 }
 
 function generateUsernames($words) {
     $usernames = [];
     $cleanWords = [];
+    
     foreach ($words as $word) {
         $clean = preg_replace('/[^a-zA-Z0-9]/', '', $word);
-        if (strlen($clean) > 0) $cleanWords[] = $clean;
+        if (strlen($clean) > 0) {
+            $cleanWords[] = $clean;
+        }
     }
+    
     if (empty($cleanWords)) return $usernames;
+    
+    // john doe -> johndoe, john-doe, john_doe, johnd
     $firstName = $cleanWords[0];
     $lastName = end($cleanWords);
+    
     $usernames[] = strtolower($firstName) . strtolower($lastName);
     $usernames[] = strtolower($firstName) . '-' . strtolower($lastName);
     $usernames[] = strtolower($firstName) . '_' . strtolower($lastName);
@@ -123,13 +151,18 @@ function generateUsernames($words) {
     $usernames[] = strtolower($firstName);
     $usernames[] = strtolower($lastName);
     $usernames[] = strtolower(implode('', $cleanWords));
+    
     return $usernames;
 }
 
 function fetchGitHubProfile($username) {
     $username = trim($username);
-    if (strlen($username) < 2 || strlen($username) > 39) return null;
+    if (strlen($username) < 2 || strlen($username) > 39) {
+        return null;
+    }
+    
     $url = "https://api.github.com/users/" . urlencode($username);
+    
     $ch = curl_init();
     curl_setopt_array($ch, [
         CURLOPT_URL => $url,
@@ -137,15 +170,26 @@ function fetchGitHubProfile($username) {
         CURLOPT_TIMEOUT => 5,
         CURLOPT_HTTPHEADER => [
             'Accept: application/vnd.github.v3+json',
-            'User-Agent: SynapseBrowser/1.0'
+            'User-Agent: WilliamsBrowser/1.0'
         ]
     ]);
+    
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    if ($httpCode !== 200) return null;
+    
+    if ($response !== false) {
+        unset($ch);
+    }
+    
+    if ($httpCode !== 200) {
+        return null;
+    }
+    
     $data = json_decode($response, true);
-    if (!$data || isset($data['message'])) return null;
+    if (!$data || isset($data['message'])) {
+        return null;
+    }
+    
     return [
         'username' => $data['login'] ?? '',
         'name' => $data['name'] ?? $data['login'],
@@ -165,6 +209,7 @@ function fetchGitHubProfile($username) {
 function searchSearx($searxUrl, $query) {
     $encodedQuery = urlencode($query);
     $url = rtrim($searxUrl, '/') . '/search?q=' . $encodedQuery . '&format=json&engines=google,bing,duckduckgo';
+    
     $ch = curl_init();
     curl_setopt_array($ch, [
         CURLOPT_URL => $url,
@@ -172,47 +217,79 @@ function searchSearx($searxUrl, $query) {
         CURLOPT_TIMEOUT => 50,
         CURLOPT_HTTPHEADER => [
             'Accept: application/json',
-            'User-Agent: SynapseBrowser/1.0'
+            'User-Agent: Williams Browser/1.0'
         ]
     ]);
+    
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
-    curl_close($ch);
-    if ($httpCode !== 200 || empty($response) || $error) return [];
+    
+    if ($response !== false) {
+        unset($ch);
+    }
+    
+    if ($httpCode !== 200 || empty($response) || $error) {
+        return [];
+    }
+    
     $data = json_decode($response, true);
-    if (!$data || !isset($data['results'])) return [];
+    if (!$data || !isset($data['results'])) {
+        return [];
+    }
+    
     $results = [];
-    foreach (array_slice($data['results'], 0, 30) as $result) {
+    foreach (array_slice($data['results'], 0, 70) as $result) {
         $title = $result['title'] ?? '';
         $url = $result['url'] ?? '';
         $snippet = $result['content'] ?? '';
-        if (isAdultContent($title, $url, $snippet)) continue;
-        $results[] = ['title' => $title, 'url' => $url, 'snippet' => $snippet];
+        
+        // Skip adult content
+        if (isAdultContent($title, $url, $snippet)) {
+            continue;
+        }
+        
+        $results[] = [
+            'title' => $title,
+            'url' => $url,
+            'snippet' => $snippet
+        ];
+        
         if (count($results) >= 70) break;
     }
+    
     return $results;
 }
 
+# Simple function to filter out adult content based on keywords in title, URL, and snippet
 function isAdultContent($title, $url, $snippet) {
     $adultDomains = [
-        'porn','xxx','sex','nude','naked','erotic','adult',
-        'xvideos','xhamster','redtube','youporn','tube8',
-        'spankbang','hqporner','eporner','thumbzilla',
-        'xnxx','freeones','brazzers','naughtyamerica',
-        'bangbros','realitykings','digitalplayground','mofos',
-        'tna','nubiles','fakeagent','proporn','daftsex'
+        'porn', 'xxx', 'sex', 'nude', 'naked', 'erotic', 'adult',
+        'xvideos', 'xhamster', 'redtube', 'youporn', 'tube8',
+        'spankbang', 'hqporner', 'eporner', 'thumbzilla',
+        'xnxx', 'x Videos', 'freeones', 'brazzers', 'naughtyamerica',
+        'bangbros', 'realitykings', 'digitalplayground', 'mofos',
+        'tna', 'nubiles', 'fakeagent', 'proporn', 'daftsex'
     ];
+    
     $adultKeywords = [
-        'porn','xxx','sex tape','nude photo','naked photo',
-        'erotic massage','adult content','nsfw'
+        'porn', 'xxx', 'sex tape', 'nude photo', 'naked photo',
+        'erotic massage', 'adult content', 'nsfw'
     ];
+    
     $combined = strtolower($title . ' ' . $url . ' ' . $snippet);
+    
     foreach ($adultDomains as $domain) {
-        if (strpos($combined, strtolower($domain)) !== false) return true;
+        if (strpos($combined, strtolower($domain)) !== false) {
+            return true;
+        }
     }
+    
     foreach ($adultKeywords as $keyword) {
-        if (strpos($combined, strtolower($keyword)) !== false) return true;
+        if (strpos($combined, strtolower($keyword)) !== false) {
+            return true;
+        }
     }
+    
     return false;
 }
