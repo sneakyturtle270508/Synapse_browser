@@ -16,7 +16,7 @@ if (empty($query)) {
     exit;
 }
 
-$searxUrl = getenv('SEARX_URL') ?: 'https://searxng-mpv8.onrender.com';
+$searxUrl = getenv('SEARX_URL') ?: 'https://searxng-1-nzqi.onrender.com';
 
 $isPerson = isPersonSearch($query);
 $githubProfile = null;
