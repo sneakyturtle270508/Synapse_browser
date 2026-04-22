@@ -3,59 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Synapse | Private Search</title>
+  <title>Williams Browser</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --font: 'Inter', system-ui, -apple-system, sans-serif;
-      --serif: 'Instrument Serif', serif;
+      --font: 'DM Sans', system-ui, sans-serif;
       --mono: 'DM Mono', monospace;
-      --bg:          #f9f9f7;
-      --bg-secondary:#ffffff;
-      --bg-tertiary: #f1f1ee;
-      --text:        #1a1a18;
-      --text-2:      #6b6b67;
-      --text-3:      #adadaa;
-      --accent:      #6C63D5;
-      --border:      rgba(0,0,0,0.05);
-      --border-2:    rgba(0,0,0,0.08);
-      --border-3:    rgba(0,0,0,0.12);
-      --radius-md:   10px;
-      --radius-lg:   14px;
-      --radius-xl:   20px;
-      --shadow-sm:   0 2px 4px rgba(0,0,0,0.02);
-      --shadow-md:   0 4px 12px rgba(0,0,0,0.05);
+      --bg:          #0e0e0f;
+      --bg-secondary:#161618;
+      --bg-tertiary: #1c1c1f;
+      --text:        #e8e8e6;
+      --text-2:      #9a9a96;
+      --text-3:      #5c5c59;
+      --border:      rgba(255,255,255,0.08);
+      --border-2:    rgba(255,255,255,0.14);
+      --border-3:    rgba(255,255,255,0.22);
+      --radius-md:   8px;
+      --radius-lg:   12px;
+      --radius-xl:   16px;
     }
 
-    @media (prefers-color-scheme: dark) {
+    @media (prefers-color-scheme: light) {
       :root {
-        --bg:          #0e0e0f;
-        --bg-secondary:#161618;
-        --bg-tertiary: #1c1c1f;
-        --text:        #e8e8e6;
-        --text-2:      #9a9a96;
-        --text-3:      #5c5c59;
-        --border:      rgba(255,255,255,0.06);
-        --border-2:    rgba(255,255,255,0.10);
-        --border-3:    rgba(255,255,255,0.16);
-        --shadow-sm:   0 2px 4px rgba(0,0,0,0.2);
-        --shadow-md:   0 8px 24px rgba(0,0,0,0.3);
+        --bg:          #ffffff;
+        --bg-secondary:#f5f5f3;
+        --bg-tertiary: #efefed;
+        --text:        #1a1a18;
+        --text-2:      #6b6b67;
+        --text-3:      #adadaa;
+        --border:      rgba(0,0,0,0.08);
+        --border-2:    rgba(0,0,0,0.14);
+        --border-3:    rgba(0,0,0,0.22);
       }
     }
 
-    html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+    html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font); }
 
     @keyframes fadeSlideDown {
-      from { opacity: 0; transform: translateY(-12px); }
+      from { opacity: 0; transform: translateY(-10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideOutLeft {
+      from { opacity: 1; transform: translateX(0) scale(1); }
+      to   { opacity: 0; transform: translateX(-60px) scale(0.95); }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(80px) scale(0.95); }
+      to   { opacity: 1; transform: translateX(0) scale(1); }
     }
     @keyframes shimmer {
       0%   { background-position: -600px 0; }
@@ -63,28 +65,24 @@
     }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50%       { opacity: 0.4; }
+      50%       { opacity: 0.35; }
+    }
+    @keyframes countFlip {
+      from { opacity: 0; transform: translateY(-5px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .shell {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 4rem 1.5rem 6rem;
-      animation: fadeSlideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      padding: 2.5rem 1.5rem 4rem;
+      animation: fadeSlideDown 0.4s ease both;
     }
 
     .header {
-      display: flex; flex-direction: column; align-items: center;
-      margin-bottom: 4rem;
-      text-align: center;
-    }
-    
-    .header-logo-wrap {
-        margin-bottom: 1.5rem;
-        transition: transform 0.3s ease;
-    }
-    .header-logo-wrap:hover {
-        transform: scale(1.02);
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 3rem;
+      animation: fadeSlideDown 0.4s 0.05s ease both; opacity: 0;
     }
     .header-logo {
       color: var(--text);
@@ -103,87 +101,417 @@
     .header-meta { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
 
     .search-wrap {
-      max-width: 680px; margin: 0 auto 3.5rem;
-      position: relative;
+      max-width: 660px; margin: 0 auto 2.5rem;
+      animation: fadeSlideDown 0.4s 0.1s ease both; opacity: 0;
     }
-    
+    .search-label {
+      font-family: var(--mono); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-3); margin-bottom: 10px;
+    }
     .search-box {
       display: flex; align-items: center;
       background: var(--bg-secondary);
-      border: 1px solid var(--border-2);
-      border-radius: 100px;
-      padding: 6px 6px 6px 24px;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: var(--shadow-sm);
+      border: 0.5px solid var(--border-2);
+      border-radius: var(--radius-lg);
+      padding: 0 0 0 16px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.18s;
     }
     .search-box:focus-within {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(108, 99, 213, 0.1), var(--shadow-md);
-      transform: translateY(-2px);
+      border-color: var(--border-3);
+      box-shadow: 0 0 0 3px rgba(83,74,183,0.15);
+      transform: translateY(-1px);
     }
-    .search-icon { color: var(--text-3); flex-shrink: 0; margin-right: 14px; transition: color 0.2s; }
-    .search-box:focus-within .search-icon { color: var(--accent); }
-    
+    .search-icon { color: var(--text-3); flex-shrink: 0; margin-right: 10px; transition: color 0.2s; }
+    .search-box:focus-within .search-icon { color: var(--text-2); }
     .search-input {
       flex: 1; background: transparent; border: none; outline: none;
-      font-size: 1.1rem; font-family: var(--font); color: var(--text);
-      padding: 12px 0; min-width: 0;
+      font-size: 15px; font-family: var(--font); color: var(--text);
+      padding: 13px 0; min-width: 0;
     }
     .search-input::placeholder { color: var(--text-3); }
-    
     .search-btn {
       background: var(--text); color: var(--bg);
       border: none;
-      border-radius: 100px;
-      padding: 0 28px; min-height: 48px;
-      font-size: 0.95rem; font-weight: 500; font-family: var(--font);
-      cursor: pointer; transition: all 0.2s;
+      border-radius: 0 calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px) 0;
+      padding: 0 22px; min-height: 48px;
+      font-size: 13px; font-weight: 500; font-family: var(--font);
+      cursor: pointer; letter-spacing: 0.02em;
+      transition: opacity 0.15s, transform 0.1s;
     }
-    .search-btn:hover { opacity: 0.9; transform: scale(1.02); }
-    .search-btn:active { transform: scale(0.98); }
+    .search-btn:hover { opacity: 0.78; }
+    .search-btn:active { transform: scale(0.97); }
+
+    .result-count { font-family: var(--mono); font-size: 12px; color: var(--text-3); margin-bottom: 12px; }
+    .result-count.flip { animation: countFlip 0.22s ease both; }
 
     .layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 40px;
-      max-width: 700px;
-      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      align-items: start;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
+
     .layout.has-info {
-        grid-template-columns: 1fr 340px;
-        max-width: 1100px;
+      justify-content: center;
     }
+
+    .results-col {
+      width: 100%;
+      max-width: 660px;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .layout.has-info .results-col {
+      max-width: 660px;
+    }
+
+    .info-col {
+      width: 0;
+      opacity: 0;
+      transform: translateX(60px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      flex-shrink: 0;
+      padding-top: 28px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .layout.has-info .info-col {
+      width: 340px;
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .skeleton { display: none; flex-direction: column; gap: 10px; }
+    .skeleton-card {
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+    .skel {
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite linear;
+    }
+    .skel-sm  { height: 10px; width: 28%; margin-bottom: 10px; }
+    .skel-md  { height: 13px; width: 68%; margin-bottom: 8px; }
+    .skel-lg  { height: 11px; width: 92%; margin-bottom: 5px; }
+    .skel-lg2 { height: 11px; width: 74%; }
+
+    .results { display: flex; flex-direction: column; gap: 10px; }
 
     .result-card {
       background: var(--bg-secondary);
-      border: 1px solid var(--border);
+      border: 0.5px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      margin-bottom: 12px;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
       text-decoration: none;
       display: block;
-      transition: all 0.3s ease;
-      box-shadow: var(--shadow-sm);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.35s ease;
+    }
+    .result-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      animation: fadeSlideUp 0.35s ease forwards;
+    }
+    .result-card.slide-out {
+      animation: slideOutLeft 0.3s ease forwards;
     }
     .result-card:hover {
-      border-color: var(--border-3);
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
+      border-color: var(--border-2);
+      background: var(--bg-tertiary);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.18);
     }
 
-    .result-domain { font-family: var(--mono); font-size: 0.75rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block; }
-    .result-title { font-size: 1.2rem; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.3; }
-    .result-snippet { font-size: 0.95rem; color: var(--text-2); line-height: 1.6; }
+    .result-top { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .favicon {
+      width: 15px; height: 15px; border-radius: 3px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 500; font-family: var(--mono);
+    }
+    .result-domain { font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.03em; }
+    .result-badge {
+      margin-left: auto; font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em;
+      padding: 2px 8px; border-radius: 100px;
+      border: 0.5px solid var(--border); color: var(--text-3);
+    }
+    .result-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 5px; line-height: 1.45; }
+    .result-snippet { font-size: 13px; color: var(--text-2); line-height: 1.65; }
+    .result-snippet mark { background: transparent; color: var(--text); font-weight: 500; }
 
     .info-card {
       background: var(--bg-secondary);
-      border: 1px solid var(--border-2);
+      border: 0.5px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: 2rem;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateX(60px) scale(0.95);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       position: sticky;
-      top: 2rem;
-      box-shadow: var(--shadow-md);
+      top: 2.5rem;
+      margin-bottom: 16px;
+    }
+    .info-card.visible {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .info-card-header {
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .info-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border-2);
+    }
+    .info-avatar-placeholder {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3C3489, #0C447C);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .info-header-text h2 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .info-header-text p {
+      font-size: 13px;
+      color: var(--text-2);
+    }
+
+    .info-card-body {
+      padding: 1rem 1.5rem 1.5rem;
+    }
+
+    .info-description {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .info-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .info-stat {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+    }
+    .info-stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .info-stat-value {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .info-links {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .info-link {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: var(--bg-tertiary);
+      color: var(--text-2);
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .info-link:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .empty-state {
+      display: none; text-align: center; padding: 3rem 1rem;
+      font-family: var(--mono); font-size: 13px; color: var(--text-3);
+    }
+
+    /* GitHub Profile Card */
+    .github-card {
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateX(60px) scale(0.95);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-bottom: 16px;
+    }
+    .github-card.visible {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+    .github-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #24292e 0%, #1a1f24 100%);
+    }
+    .github-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.1);
+    }
+    .github-info {
+      flex: 1;
+    }
+    .github-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+    .github-username {
+      font-family: var(--mono);
+      font-size: 14px;
+      color: #8b949e;
+    }
+    .github-bio {
+      padding: 16px 20px;
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.5;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .github-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .github-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+      background: var(--bg-secondary);
+    }
+    .github-stat-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .github-stat-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .github-links {
+      padding: 16px 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .github-repos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      padding: 3px;
+      background: var(--border);
+    }
+    .github-repo {
+      aspect-ratio: 1;
+      background: var(--bg-tertiary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .github-repo:hover {
+      background: var(--bg-secondary);
+    }
+    .github-repo-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    .github-repo-name {
+      font-size: 10px;
+      color: var(--text-2);
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-2);
+      text-decoration: none;
+      padding: 6px 12px;
+      background: var(--bg-tertiary);
+      border-radius: 100px;
+      transition: all 0.15s;
+    }
+    .github-link:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .github-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .github-posts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      padding: 3px;
+      background: var(--border);
     }
 
     .speedtest-card {
@@ -279,9 +607,18 @@
     }
 
     @media (max-width: 900px) {
-      .layout.has-info { grid-template-columns: 1fr; }
-      .info-card { position: static; }
-      .tagline { font-size: 2rem; }
+      .layout.has-info {
+        grid-template-columns: 1fr;
+      }
+      .info-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .shell { padding: 1.5rem 1rem 3rem; }
+      .search-btn { padding: 0 14px; font-size: 12px; }
+      .result-title { font-size: 14px; }
     }
   </style>
 </head>
@@ -289,17 +626,51 @@
   <div class="shell">
 
     <div class="header">
-      <div class="logo"><span class="status-dot"></span><strong>Williams</strong> Browser</div>
+      <svg viewBox="0 0 520 160" xmlns="http://www.w3.org/2000/svg" width="180" height="55" class="header-logo">
+  <!-- Icon group -->
+  <g transform="translate(78, 80)">
+    <!-- Lines from center -->
+    <line x1="0" y1="0" x2="-38" y2="-32" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="38" y2="-32" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="-42" y2="28" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="42" y2="28" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Satellite nodes -->
+    <!-- Top-left: teal -->
+    <circle cx="-42" cy="-36" r="10" fill="#2CC4B2"/>
+    <!-- Top-right: red/coral -->
+    <circle cx="42" cy="-36" r="10" fill="#E05A5A"/>
+    <!-- Bottom-left: orange/yellow -->
+    <circle cx="-46" cy="32" r="10" fill="#E8A020"/>
+    <!-- Bottom-right: green -->
+    <circle cx="46" cy="32" r="10" fill="#7DC642"/>
+
+    <!-- Center node: purple -->
+    <circle cx="0" cy="0" r="22" fill="#6C63D5"/>
+  </g>
+
+  <!-- "Synapse" text -->
+  <text
+    x="160"
+    y="100"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="68"
+    font-weight="700"
+    fill="currentColor"
+    letter-spacing="-1"
+  >Synapse</text>
+</svg>
       <div class="header-meta" id="indexMeta">powered by Searx</div>
     </div>
 
     <div class="search-wrap">
+      <div class="search-label">query</div>
       <div class="search-box">
-        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
         </svg>
-        <input class="search-input" id="searchInput" type="text" placeholder="What are you looking for?" autofocus/>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search the web..." value=""/>
         <button class="search-btn" id="searchBtn">Search</button>
       </div>
     </div>
@@ -317,6 +688,38 @@
       </div>
 
       <div class="info-col">
+        <div class="speedtest-card" id="speedtestCard" style="display:none;">
+          <div class="speedtest-card-header">
+            <div class="speedtest-icon">📶</div>
+            <div class="speedtest-info">
+              <div class="speedtest-title">Speed Test</div>
+              <div class="speedtest-subtitle" id="speedtestStatus">Ready to test</div>
+            </div>
+          </div>
+          <div class="speedtest-card-body">
+            <div class="speedtest-stats">
+              <div class="speedtest-stat">
+                <div class="speedtest-stat-value" id="speedPing">--</div>
+                <div class="speedtest-stat-label">Ping (ms)</div>
+              </div>
+              <div class="speedtest-stat">
+                <div class="speedtest-stat-value" id="speedDownload">--</div>
+                <div class="speedtest-stat-label">Download</div>
+              </div>
+              <div class="speedtest-stat">
+                <div class="speedtest-stat-value" id="speedUpload">--</div>
+                <div class="speedtest-stat-label">Upload</div>
+              </div>
+            </div>
+            <button class="speedtest-btn" id="speedtestRunBtn" onclick="runSpeedTest()">
+              <span>▶</span> Start Test
+            </button>
+            <div class="speedtest-gauge">
+              <div class="speedtest-gauge-fill" id="speedtestGauge"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="github-card" id="githubCard">
           <div class="github-card-header">
             <img class="github-avatar" id="githubAvatar" src="" alt="avatar">
@@ -328,11 +731,7 @@
           <div class="github-bio" id="githubBio"></div>
           <div class="github-stats" id="githubStats"></div>
           <div class="github-links" id="githubLinks"></div>
-          <div class="github-repos" id="githubRepos">
-            <div class="github-repo"><div class="github-repo-icon">📁</div><div class="github-repo-name">repo</div></div>
-            <div class="github-repo"><div class="github-repo-icon">📁</div><div class="github-repo-name">repo</div></div>
-            <div class="github-repo"><div class="github-repo-icon">📁</div><div class="github-repo-name">repo</div></div>
-          </div>
+          
         </div>
 
         <div class="info-card" id="infoCard">
@@ -351,10 +750,10 @@
         </div>
       </div>
     </div>
+
   </div>
 
   <script>
-    // Simplified logic for demonstration
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const resultsEl = document.getElementById('results');
@@ -432,6 +831,20 @@
 
     function renderResults(data, query) {
       skeletonEl.style.display = 'none';
+      
+      // Hide all info cards first
+      document.getElementById('speedtestCard').style.display = 'none';
+      layout.classList.remove('has-info');
+      githubCard.classList.remove('visible');
+      infoCard.classList.remove('visible');
+      
+      // Check for speed test
+      if (query.toLowerCase().includes('speed test') || query.toLowerCase() === 'speedtest') {
+        document.getElementById('speedtestCard').style.display = 'block';
+        layout.classList.add('has-info');
+        renderSimpleResults(data.results, query);
+        return;
+      }
       
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
       resultCountEl.textContent = `${data.total || 0} results · ${elapsed}s`;
@@ -632,6 +1045,73 @@
     function getInitials(text) {
       if (!text) return '??';
       return text.split(' ').map(w => w[0]).filter(Boolean).join('').substring(0, 2).toUpperCase();
+    }
+
+    async function runSpeedTest() {
+      const btn = document.getElementById('speedtestRunBtn');
+      const status = document.getElementById('speedtestStatus');
+      const gauge = document.getElementById('speedtestGauge');
+      
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Testing...';
+      status.textContent = 'Testing download speed...';
+      gauge.style.width = '0%';
+      
+      try {
+        const ping = await testPing();
+        document.getElementById('speedPing').textContent = ping + ' ms';
+        status.textContent = 'Testing download...';
+        gauge.style.width = '30%';
+        
+        const download = await testDownload();
+        document.getElementById('speedDownload').textContent = download + ' Mbps';
+        status.textContent = 'Testing upload...';
+        gauge.style.width = '60%';
+        
+        const upload = await testUpload();
+        document.getElementById('speedUpload').textContent = upload + ' Mbps';
+        status.textContent = 'Complete!';
+        gauge.style.width = '100%';
+      } catch (e) {
+        status.textContent = 'Test failed: ' + e.message;
+      }
+      
+      btn.disabled = false;
+      btn.innerHTML = '<span>▶</span> Test Again';
+    }
+
+    async function testPing() {
+      const times = [];
+      for (let i = 0; i < 5; i++) {
+        const start = performance.now();
+        await fetch('https://www.google.com/favicon.ico?' + Date.now(), { mode: 'no-cors', cache: 'no-store' });
+        times.push(performance.now() - start);
+      }
+      return Math.round(times.sort((a, b) => a - b)[2]);
+    }
+
+    async function testDownload() {
+      const testFile = 'https://speed.cloudflare.com/__down?bytes=5000000';
+      const start = performance.now();
+      await fetch(testFile, { mode: 'no-cors', cache: 'no-store' });
+      const duration = (performance.now() - start) / 1000;
+      const bitsLoaded = 5000000 * 8;
+      const speedBps = bitsLoaded / duration;
+      return Math.round(speedBps / 1000000 * 10) / 10;
+    }
+
+    async function testUpload() {
+      const data = new Uint8Array(500000);
+      const start = performance.now();
+      await fetch('https://speed.cloudflare.com/__up', {
+        method: 'POST',
+        body: data,
+        mode: 'no-cors'
+      });
+      const duration = (performance.now() - start) / 1000;
+      const bitsSent = 500000 * 8;
+      const speedBps = bitsSent / duration;
+      return Math.round(speedBps / 1000000 * 10) / 10;
     }
 
     searchBtn.addEventListener('click', doSearch);
